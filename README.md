@@ -1,6 +1,6 @@
 # Entrena tu Memoria
 
-Bienvenido al repositorio de "Entrena tu Memoria". Este proyecto consiste en una aplicación interactiva diseñada para ayudarte a mejorar y entrenar tu memoria a través de juegos y desafíos divertidos.
+Bienvenido al repositorio de "Entrena tu Memoria". Este proyecto consiste en una aplicación interactiva diseñada para ayudarte a mejorar y entrenar tu memoria a través de la velocidad y la precisión
 
 ## Índice
 
@@ -15,6 +15,7 @@ Bienvenido al repositorio de "Entrena tu Memoria". Este proyecto consiste en una
 ## Descripción
 
 "Entrena tu Memoria" es una aplicación móvil construida utilizando Android y Jetpack Compose. La aplicación presenta una serie de juegos diseñados para mejorar tus habilidades de memoria a través de la repetición y el desafío progresivo.
+cuenta con cuatro botones cada uno de un color diferente y con un número asignado del uno al cuatro, en pantalla aparecerá una sucesión de números que coinciden con los de los botones y desaparecen tras unos segundos, el usuario debe introducir la secuencia correcta para pasar de ronda
 
 ## Instalación
 
