@@ -4,48 +4,97 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlin.random.Random
 
+// Clase ViewModel que maneja la lógica del juego "Simon Dice"
 class ViewModel : ViewModel() {
-    var Datos= mutableStateOf(Datos()) // Instancia de la clase Datos para almacenar el estado del juego
+    // Estado del juego, observable por la UI a través de mutableStateOf
+    var datos = mutableStateOf(Datos())
 
     // Función que se llama cuando se pulsa un botón
     fun onButtonClicked(buttonNumber: Int) {
+        // 1. Actualiza la secuencia de botones pulsados
+        datos.value = Datos(
+            aciertos = datos.value.aciertos,
+            mostrarSioNo = datos.value.mostrarSioNo,
+            fallos = datos.value.fallos,
+            rondaActual = datos.value.rondaActual,
+            secuenciaBotones = datos.value.secuenciaBotones + buttonNumber,
+            botonesPulsados = datos.value.botonesPulsados,
+            mensaje = datos.value.mensaje
+        )
 
-        val datosActuales = Datos.value
+        // 2. Obtiene el índice del último botón pulsado
+        val index = datos.value.secuenciaBotones.size - 1
 
-        // Añadir el número pulsado a la lista de botones pulsados
-        datosActuales.secuenciaBotones = datosActuales.secuenciaBotones + buttonNumber
-
-        // Obtener el índice del botón pulsado
-        val index = datosActuales.secuenciaBotones.size - 1
-
-        // Comprobar si el número pulsado coincide con el número en la secuencia
-        if (datosActuales.secuenciaBotones[index] == buttonNumber) {
-            datosActuales.mensaje = "Los números son iguales" // Mensaje de acierto
-            datosActuales.aciertos++ // Incrementar contador de aciertos
+        // 3. Comprueba si el botón pulsado es correcto
+        if (datos.value.secuenciaBotones[index] == buttonNumber) {
+            // 3.1. Si es correcto, actualiza el mensaje y los aciertos
+            datos.value = Datos(
+                aciertos = datos.value.aciertos + 1,
+                mostrarSioNo = datos.value.mostrarSioNo,
+                fallos = datos.value.fallos,
+                rondaActual = datos.value.rondaActual,
+                secuenciaBotones = datos.value.secuenciaBotones,
+                botonesPulsados = datos.value.botonesPulsados,
+                mensaje = "Los números son iguales"
+            )
         } else {
-            datosActuales.mensaje = "Los números son diferentes" // Mensaje de error
-            datosActuales.fallos++ // Incrementar contador de fallos
+            // 3.2. Si es incorrecto, actualiza el mensaje y los fallos
+            datos.value = Datos(
+                aciertos = datos.value.aciertos,
+                mostrarSioNo = datos.value.mostrarSioNo,
+                fallos = datos.value.fallos + 1,
+                rondaActual = datos.value.rondaActual,
+                secuenciaBotones = datos.value.secuenciaBotones,
+                botonesPulsados = datos.value.botonesPulsados,
+                mensaje = "Los números son diferentes"
+            )
         }
 
-        // Comprobar si se han pulsado 4 botones
-        if (datosActuales.secuenciaBotones.size == 4) {
-            if (datosActuales.secuenciaBotones == datosActuales.secuenciaBotones) {
-                datosActuales.rondaActual++ // Incrementar contador de rondas
-                datosActuales.secuenciaBotones = generateSequence() // Generar una nueva secuencia de botones
-                datosActuales.mensaje = "¡Ronda completada! Prepárate para la siguiente ronda." // Mensaje de ronda completada
+        // 4. Comprueba si se ha completado la secuencia de 4 botones
+        if (datos.value.secuenciaBotones.size == 4) {
+            // 4.1. Si la secuencia es correcta, avanza a la siguiente ronda
+            if (datos.value.secuenciaBotones == datos.value.botonesPulsados) {
+                datos.value = Datos(
+                    aciertos = datos.value.aciertos,
+                    mostrarSioNo = datos.value.mostrarSioNo,
+                    fallos = datos.value.fallos,
+                    rondaActual = datos.value.rondaActual + 1,
+                    secuenciaBotones = listOf(),
+                    botonesPulsados = datos.value.botonesPulsados,
+                    mensaje = "¡Ronda completada! Prepárate para la siguiente ronda."
+                )
             } else {
-                datosActuales.mensaje = "Juego terminado: \nHas llegado a la ronda ${datosActuales.rondaActual}.\nHas tenido un total de ${datosActuales.aciertos} aciertos.\nHas tenido un total de ${datosActuales.fallos} fallos" // Mensaje de fin del juego
+                // 4.2. Si la secuencia es incorrecta, termina el juego
+                datos.value = Datos(
+                    aciertos = datos.value.aciertos,
+                    mostrarSioNo = datos.value.mostrarSioNo,
+                    fallos = datos.value.fallos,
+                    rondaActual = datos.value.rondaActual,
+                    secuenciaBotones = listOf(),
+                    botonesPulsados = datos.value.botonesPulsados,
+                    mensaje = "Juego terminado: \nHas llegado a la ronda ${datos.value.rondaActual}." +
+                            "\nHas tenido un total de ${datos.value.aciertos} aciertos." +
+                            "\nHas tenido un total de ${datos.value.fallos} fallos"
+                )
             }
-            datosActuales.secuenciaBotones = listOf() // Limpiar la lista de botones pulsados
         }
-
-        Datos.value = datosActuales // Actualizar los datos en el estado
     }
 
-    // Función para generar una secuencia aleatoria de 4 números entre 1 y 4
-    private fun generateSequence(): List<Int> {
-        return List(4) { Random.nextInt(1, 5)
-        }
+    // Función para generar una nueva secuencia de botones
+    fun generateSequence(): List<Int> {
+        // 1. Genera una lista de 4 números aleatorios entre 1 y 4
+        val nuevaSecuencia = List(4) { Random.nextInt(1, 5) }
+        // 2. Actualiza el estado con la nueva secuencia y mostrarSioNo en true
+        datos.value = Datos(
+            aciertos = datos.value.aciertos,
+            mostrarSioNo = true,
+            fallos = datos.value.fallos,
+            rondaActual = datos.value.rondaActual,
+            secuenciaBotones = nuevaSecuencia,
+            botonesPulsados = datos.value.botonesPulsados,
+            mensaje = datos.value.mensaje
+        )
+        // 3. Devuelve la nueva secuencia
+        return nuevaSecuencia
     }
 }
-

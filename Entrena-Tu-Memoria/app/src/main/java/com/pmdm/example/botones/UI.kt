@@ -1,101 +1,127 @@
 package com.pmdm.example.botones
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-// Composable principal de la aplicación
+// Composable principal de la aplicación. Representa la interfaz de usuario del juego "Simon Dice".
 @Composable
-fun UI(ViewModel: ViewModel = ViewModel()) {
-    // Estructura de diseño usando Box para superponer la imagen de fondo
+fun UI(viewModel: ViewModel = ViewModel()) {
+
+    // Box se utiliza para superponer elementos. En este caso, se usa para colocar la imagen de fondo (si la hubiera).
     Box(
         modifier = Modifier
-            .fillMaxSize() // Ocupa  el tamaño de la pantalla
+            .fillMaxSize() // El modificador fillMaxSize() hace que el Box ocupe el espacio disponible en la pantalla.
     ) {
-        // Imagen de fondo
-        //        Image(
-        //            painter = painterResource(R.drawable.background_image), // Referencia a la imagen en la carpeta drawable
-        //            contentDescription = null,
-        //            modifier = Modifier.fillMaxSize() // La imagen ocupa  el tamaño de la pantalla
-        //        )
-
-
-        // Estructura de diseño usando Column
+        // Column se utiliza para organizar elementos verticalmente.
         Column(
             modifier = Modifier
-                .fillMaxSize() // Ocupa  el tamaño de la pantalla
-                .padding(16.dp), // Padding alrededor de la columna
-            verticalArrangement = Arrangement.Center, // Centra verticalmente los elementos dentro de la columna
-            horizontalAlignment = Alignment.CenterHorizontally // Centra horizontalmente los elementos dentro de la columna
+                .fillMaxSize() // Ocupa el tamaño de la pantalla.
+                .padding(16.dp), // Agrega un padding de 16 dp alrededor de la columna.
+            verticalArrangement = Arrangement.Center, // Centra verticalmente los elementos dentro de la columna.
+            horizontalAlignment = Alignment.CenterHorizontally // Centra horizontalmente los elementos dentro de la columna.
         ) {
-            // Caja para contener el título
-            Box(modifier = Modifier.fillMaxWidth()) {
+            // Box para contener el título del juego.
+            Box(modifier = Modifier.fillMaxWidth()) { // fillMaxWidth() hace que el Box ocupe el ancho disponible.
                 Text(
-                    text = "Entrena tu memoria", // Texto del título
-                    style = MaterialTheme.typography.headlineMedium, // Estilo del texto
-                    modifier = Modifier.align(Alignment.TopCenter) // Alinea el texto en el centro superior de la caja
+                    text = "Simon dice", // Texto del título.
+                    style = MaterialTheme.typography.headlineMedium, // Estilo del texto del título.
+                    modifier = Modifier.align(Alignment.TopCenter) // Alinea el texto en el centro superior del Box.
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp)) // Espacio de 16 dp de altura
-            // Texto para mostrar la ronda actual
-            Text(
-                text = "Ronda: ${ViewModel.Datos.value.rondaActual}",
-                style = MaterialTheme.typography.headlineMedium
-            )
-            // Texto para mostrar la combinación de botones a pulsar
-            Text(
-                text = "Combinación a pulsar: ${ViewModel.Datos.value.secuenciaBotones.joinToString()}",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Spacer(modifier = Modifier.height(16.dp)) // Espacio de 16 dp de altura
+            Spacer(modifier = Modifier.height(16.dp)) // Agrega un espacio vertical de 16 dp.
 
-            // Crear la cuadrícula de botones
+            // Texto para mostrar la ronda actual del juego.
+            Text(
+                text = "Ronda: ${viewModel.datos.value.rondaActual}", // Muestra el texto "Ronda:" seguido del valor de la ronda actual.
+                style = MaterialTheme.typography.headlineMedium // Estilo del texto.
+            )
+            // Texto para mostrar la secuencia de botones que el jugador debe pulsar.
+            Text(
+                text = "Combinación a pulsar: ${viewModel.datos.value.secuenciaBotones.joinToString()}", // Muestra la secuencia de botones.
+                style = MaterialTheme.typography.bodyLarge // Estilo del texto.
+            )
+            Spacer(modifier = Modifier.height(16.dp)) // Agrega un espacio vertical de 16 dp.
+
+            // Column para organizar los botones en una cuadrícula.
             Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+                verticalArrangement = Arrangement.Center, // Centra verticalmente los botones.
+                horizontalAlignment = Alignment.CenterHorizontally, // Centra horizontalmente los botones.
+                modifier = Modifier.fillMaxWidth() // Ocupa el ancho disponible.
             ) {
-                // Botones de la primera fila
-                Boton.values().take(4).forEach { boton ->
-                    CustomButton(boton = boton, onClick = { ViewModel.onButtonClicked(boton.numero) })
+                // Itera sobre los primeros 4 botones del enum Boton y crea un CustomButton para cada uno.
+                Boton.entries.toTypedArray().take(4).forEach { boton ->
+                    CustomButton(boton = boton, onClick = { viewModel.onButtonClicked(boton.numero) })
                 }
             }
+            // Row para organizar los botones restantes en una fila.
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp), // Espacia los botones horizontalmente con 16 dp
-                modifier = Modifier.fillMaxWidth() // Ocupa  el ancho disponible
+                horizontalArrangement = Arrangement.spacedBy(16.dp), // Agrega un espacio de 16 dp entre los botones.
+                modifier = Modifier.fillMaxWidth() // Ocupa el ancho disponible.
             ) {
-                // Botones de la segunda fila
-                Boton.values().drop(4).forEach { boton ->
-                    CustomButton(boton = boton, onClick = { ViewModel.onButtonClicked(boton.numero) })
+                // Itera sobre los botones restantes del enum Boton y crea un CustomButton para cada uno.
+                Boton.entries.drop(4).forEach { boton ->
+                    CustomButton(boton = boton, onClick = { viewModel.onButtonClicked(boton.numero) })
                 }
             }
+            // Column para el botón Start y el mensaje
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp), // Ajusta según la separación deseada
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Boton_Start(onClick = { viewModel.generateSequence() })
+                }
 
-            Spacer(modifier = Modifier.height(16.dp)) // Espacio de 16 dp de altura
-            // Texto para mostrar mensajes del juego
-            Text(text = ViewModel.Datos.value.mensaje, style = MaterialTheme.typography.bodyLarge)
+                // Texto para mostrar mensajes del juego
+                Text(
+                    text = viewModel.datos.value.mensaje,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }
 
-// Composable para crear un botón personalizado
+// Función Composable para crear un botón Start.
+@Composable
+fun Boton_Start(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+
+    ) {
+        Text(text = "Start", color = Color.Black)
+    }
+}
+
+// Función Composable para crear un botón personalizado.
 @Composable
 fun CustomButton(boton: Boton, onClick: () -> Unit) {
     Button(
-        onClick = onClick, // Acción a realizar al pulsar el botón
-        colors = ButtonDefaults.buttonColors(containerColor = boton.color), // Color del botón
+        onClick = onClick, // Acción a realizar al pulsar el botón.
+        colors = ButtonDefaults.buttonColors(containerColor = boton.color), // Color del botón.
         modifier = Modifier
-            .padding(bottom = 16.dp) // Espacio inferior de 16 dp
+            .padding(bottom = 16.dp), // Espacio inferior de 16 dp.
     ) {
-        // Texto del botón
+        // Texto del botón.
         Text(text = "${boton.numero}", color = boton.textColor)
     }
 }
 
-// Vista previa del diseño de botones
+// Vista previa del diseño de botones.
 @Preview(showBackground = true)
 @Composable
 fun PreviewButtons() {
