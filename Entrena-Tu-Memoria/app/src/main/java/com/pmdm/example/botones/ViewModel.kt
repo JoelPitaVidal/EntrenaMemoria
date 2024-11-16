@@ -9,12 +9,17 @@ class ViewModel : ViewModel() {
     var datos = mutableStateOf(Datos())
 
     fun onButtonClicked(buttonNumber: Int) {
+        Log.i("cicloVida", "Botón pulsado: $buttonNumber")
+        Log.i("cicloVida", "Secuencia antes del click: ${datos.value.secuenciaBotones}")
+        Log.i("cicloVida", "Botones pulsados antes del click: ${datos.value.botonesPulsados}")
+
         // 1. Actualizar la secuencia de botones pulsados (del usuario)
+        val nuevosBotonesPulsados = datos.value.botonesPulsados + buttonNumber
         datos.value = datos.value.copy(
-            botonesPulsados = datos.value.botonesPulsados + buttonNumber
+            botonesPulsados = nuevosBotonesPulsados
         )
 
-        val index = datos.value.botonesPulsados.size - 1
+        val index = nuevosBotonesPulsados.size - 1
 
         // 3. Comprobar si el botón pulsado es correcto
         if (datos.value.secuenciaBotones.isNotEmpty() &&
@@ -37,8 +42,8 @@ class ViewModel : ViewModel() {
         }
 
         // 4. Comprobar si se ha completado la secuencia de 4 botones
-        if (datos.value.botonesPulsados.size == 4) {
-            if (datos.value.secuenciaBotones == datos.value.botonesPulsados) {
+        if (nuevosBotonesPulsados.size == 4) {
+            if (datos.value.secuenciaBotones == nuevosBotonesPulsados) {
                 Log.i("cicloVida", "Pasa de ronda")
                 val nuevaSecuencia = generateSequence()
                 datos.value = datos.value.copy(
@@ -58,6 +63,9 @@ class ViewModel : ViewModel() {
                 )
             }
         }
+
+        Log.i("cicloVida", "Secuencia después del click: ${datos.value.secuenciaBotones}")
+        Log.i("cicloVida", "Botones pulsados después del click: ${datos.value.botonesPulsados}")
     }
 
     fun generateSequence(): List<Int> {
@@ -71,3 +79,4 @@ class ViewModel : ViewModel() {
         return nuevaSecuencia
     }
 }
+
