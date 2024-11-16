@@ -1,6 +1,7 @@
 package com.pmdm.example.botones
 
 // Clase para almacenar los diferentes datos del juego
+
 data class Datos(
     var aciertos: Int = 0,
     var mostrarSioNo: Boolean = false,
