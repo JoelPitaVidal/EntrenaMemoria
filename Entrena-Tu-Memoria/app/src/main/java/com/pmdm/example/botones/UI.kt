@@ -73,7 +73,7 @@ fun UI(viewModel: ViewModel = ViewModel()) {
             // Column para el botón Start y el mensaje
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp), // Ajusta según la separación deseada
+                verticalArrangement = Arrangement.spacedBy(25.dp), // Ajusta según la separación deseada
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
