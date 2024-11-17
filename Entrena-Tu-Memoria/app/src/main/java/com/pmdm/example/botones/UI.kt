@@ -1,6 +1,6 @@
 package com.pmdm.example.botones
 
-import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,64 +12,52 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pmdm.example.botones.Datos.secuenciaGenerada
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+    // Función Composable que representa la interfaz de usuario principal del juego.
 @Composable
 fun UI(model: ViewModel) {
+    // Llama a la función Greeting para mostrar el contenido principal de la UI.
     Greeting(myViewModel = model)
 }
 
-@Composable
-fun GenerarBoton(color: Colors, context: Context, myViewModel: ViewModel){
-    val buttonColor by remember { mutableStateOf(color.color) }
-    var activo by remember { mutableStateOf(myViewModel.estadoActual.value!!.boton_activo) }
-
-    myViewModel.estadoActual.observe(LocalLifecycleOwner.current) {
-        activo = myViewModel.estadoActual.value!!.boton_activo
-    }
-    Button(
-        onClick = {
-            if(activo) myViewModel.click(color.id, context) },
-        modifier = Modifier
-            .padding(10.dp)
-            .size(150.dp, 100.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = buttonColor,
-            contentColor = Color.White,
-        )
-    ) {
-        Text(text = color.nombre)
-    }
-}
-
+    // Función Composable que muestra el saludo y los elementos de la UI del juego.
 @Composable
 fun Greeting(modifier: Modifier = Modifier, myViewModel: ViewModel) {
+    // Obtiene el contexto actual de la aplicación.
     val context = LocalContext.current
+    // Define un color verde claro para el fondo.
+    val lightGreen = Color(0xFFCCFFCC)
+    // Estados para los colores de los botones, usando mutableStateOf para que sean observables.
     val redButtonColor = remember { mutableStateOf(Colors.RED.color) }
     val blueButtonColor = remember { mutableStateOf(Colors.BLUE.color) }
     val greenButtonColor = remember { mutableStateOf(Colors.GREEN.color) }
     val yellowButtonColor = remember { mutableStateOf(Colors.YELLOW.color) }
-    suspend fun colorearSecuencia (){
-        for (i in secuenciaGenerada){
-            delay(300)
-            when(i){
+
+    // Función suspendida para colorear la secuencia de botones.
+    suspend fun colorearSecuencia() {
+    // Itera sobre la secuencia generada.
+        for (i in secuenciaGenerada) {
+            delay(300) // Pausa de 300ms antes de cada color.
+    // Cambia el color del botón según el valor de 'i'.
+            when (i) {
                 Colors.RED.id -> {
+    // Cambia al color presionado.
                     redButtonColor.value = Colors.RED.colorPressed
+    // Pausa de 1 segundo.
                     delay(1000)
+    // Vuelve al color original.
                     redButtonColor.value = Colors.RED.color
                 }
                 Colors.BLUE.id -> {
@@ -89,86 +77,117 @@ fun Greeting(modifier: Modifier = Modifier, myViewModel: ViewModel) {
                 }
             }
         }
+    // Cambia el estado del juego a "jugando" después de mostrar la secuencia.
         myViewModel.jugandoJuego()
     }
 
-    Column (
+    // Columna principal para organizar los elementos de la UI.
+    Column(
+   // Alineación horizontal al centro.
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ){
+        modifier = modifier
+    // Ocupa el tamaño disponible.
+            .fillMaxSize()
+    // Aplica el color de fondo verde claro.
+            .background(lightGreen)
+    ) {
+    // Texto para mostrar el título del juego.
         Text(
             text = "SIMON DICE ",
+    // Tamaño de la fuente.
             fontSize = 38.sp,
-            modifier = Modifier.padding(vertical = 100.dp),
+    // Padding vertical.
+            modifier = Modifier.padding(vertical = 100.dp)
         )
+    // Fila para organizar los botones de colores en una cuadrícula 2x2.
         Row {
+    // Columna para los botones rojo y azul.
             Column {
-                Button(onClick = { myViewModel.click(Colors.RED.id, context) },
+    // Botón rojo.
+                Button(
+     // Acción al hacer clic.
+                    onClick = { myViewModel.click(Colors.RED.id, context) },
                     modifier = Modifier
+    // Padding alrededor del botón.
                         .padding(10.dp)
+    // Tamaño del botón.
                         .size(150.dp, 100.dp),
                     colors = ButtonDefaults.buttonColors(
+    // Color del botón.
                         containerColor = redButtonColor.value,
-                        contentColor = Color.White,
+    // Color del texto del botón.
+                        contentColor = Color.White
                     )
                 ) {
+    // Texto del botón.
                     Text(text = Colors.RED.nombre)
                 }
-                Button(onClick = { myViewModel.click(Colors.BLUE.id, context) },
+    // Botón azul.
+                Button(
+                    onClick = { myViewModel.click(Colors.BLUE.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
                         .size(150.dp, 100.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = blueButtonColor.value,
-                        contentColor = Color.White,
+                        contentColor = Color.White
                     )
                 ) {
                     Text(text = Colors.BLUE.nombre)
                 }
             }
+    // Columna para los botones verde y amarillo.
             Column {
-                Button(onClick = { myViewModel.click(Colors.GREEN.id, context) },
+    // Botón verde.
+                Button(
+                    onClick = { myViewModel.click(Colors.GREEN.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
                         .size(150.dp, 100.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = greenButtonColor.value,
-                        contentColor = Color.White,
+                        contentColor = Color.White
                     )
                 ) {
                     Text(text = Colors.GREEN.nombre)
                 }
-                Button(onClick = { myViewModel.click(Colors.YELLOW.id, context) },
+    // Botón amarillo.
+                Button(
+                    onClick = { myViewModel.click(Colors.YELLOW.id, context) },
                     modifier = Modifier
                         .padding(10.dp)
                         .size(150.dp, 100.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = yellowButtonColor.value,
-                        contentColor = Color.White,
+                        contentColor = Color.White
                     )
                 ) {
                     Text(text = Colors.YELLOW.nombre)
                 }
             }
         }
+    // Espacio flexible para empujar el botón "START" hacia abajo.
         Spacer(modifier = Modifier.weight(1f))
+    // Coroutine scope para lanzar la corrutina.
         val coroutineScope = rememberCoroutineScope()
-        TextButton(onClick = {
-            coroutineScope.launch {
-                myViewModel.generarSecuencia()
-                colorearSecuencia()
-            }
-        },
+    // Botón "START".
+        TextButton(
+            onClick = {
+                coroutineScope.launch {
+                    myViewModel.generarSecuencia()
+                    colorearSecuencia()
+                }
+            },
             modifier = Modifier
                 .padding(10.dp)
                 .size(300.dp, 100.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Gray,
-                contentColor = Color.White,
+                contentColor = Color.White
             )
         ) {
+    // Texto del botón con la ronda actual.
             Text(text = "START ronda: " + Datos.ronda.value)
         }
     }
-
 }
