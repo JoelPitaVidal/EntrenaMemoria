@@ -26,7 +26,7 @@ class ViewModel : ViewModel() {
             index < datos.value.secuenciaBotones.size &&
             datos.value.secuenciaBotones[index] == buttonNumber) {
             Log.i("cicloVida", "Boton pulsado correcto")
-            // 3.1. Si es correcto, actualizar el mensaje y los aciertos
+        // 3.1. Si es correcto, actualizar el mensaje y los aciertos
             datos.value = datos.value.copy(
                 aciertos = datos.value.aciertos + 1,
                 mensaje = "Los números son iguales"
@@ -34,7 +34,7 @@ class ViewModel : ViewModel() {
         } else if (datos.value.secuenciaBotones.isNotEmpty() &&
             index < datos.value.secuenciaBotones.size) {
             Log.i("cicloVida", "Los números son diferentes")
-            // 3.2. Si es incorrecto, actualizar el mensaje y los fallos
+        // 3.2. Si es incorrecto, actualizar el mensaje y los fallos
             datos.value = datos.value.copy(
                 fallos = datos.value.fallos + 1,
                 mensaje = "Los números son diferentes"
@@ -74,7 +74,8 @@ class ViewModel : ViewModel() {
         datos.value = datos.value.copy(
             mostrarSioNo = true,
             secuenciaBotones = nuevaSecuencia,
-            botonesPulsados = listOf() // Reiniciar botonesPulsados
+        // Reiniciar botonesPulsados
+            botonesPulsados = listOf()
         )
         return nuevaSecuencia
     }
