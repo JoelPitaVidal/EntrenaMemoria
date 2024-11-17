@@ -1,20 +1,19 @@
 package com.pmdm.example.botones
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.pmdm.example.botones.ui.theme.SimonDiceTheme
 
-// Clase principal de la actividad
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("cicloVida", "Ingresa a onCreate")
-        // Establece el contenido de la actividad usando Jetpack Compose
+        val viewModel: ViewModel = ViewModel()
         setContent {
-            UI()
+            SimonDiceTheme {
+                com.pmdm.example.botones.UI(model = viewModel)
+            }
         }
     }
 }
-
 

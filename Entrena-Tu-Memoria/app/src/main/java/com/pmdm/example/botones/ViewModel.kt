@@ -1,83 +1,77 @@
 package com.pmdm.example.botones
 
+import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
+import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlin.random.Random
+import com.pmdm.example.botones.Datos.ronda
+import com.pmdm.example.botones.Datos.secuenciaIntroducida
+import com.pmdm.example.botones.Datos.secuenciaGenerada
+import com.pmdm.example.botones.Datos.mensajeMostrado
+import com.pmdm.example.botones.Estados.*
+
 
 class ViewModel : ViewModel() {
-    var datos = mutableStateOf(Datos())
+    var estadoActual: MutableLiveData<Estados> = MutableLiveData(ESPERANDO)
 
-    fun onButtonClicked(buttonNumber: Int) {
-        Log.i("cicloVida", "Botón pulsado: $buttonNumber")
-        Log.i("cicloVida", "Secuencia antes del click: ${datos.value.secuenciaBotones}")
-        Log.i("cicloVida", "Botones pulsados antes del click: ${datos.value.botonesPulsados}")
-
-        // 1. Actualizar la secuencia de botones pulsados (del usuario)
-        val nuevosBotonesPulsados = datos.value.botonesPulsados + buttonNumber
-        datos.value = datos.value.copy(
-            botonesPulsados = nuevosBotonesPulsados
-        )
-
-        val index = nuevosBotonesPulsados.size - 1
-
-        // 3. Comprobar si el botón pulsado es correcto
-        if (datos.value.secuenciaBotones.isNotEmpty() &&
-            index < datos.value.secuenciaBotones.size &&
-            datos.value.secuenciaBotones[index] == buttonNumber) {
-            Log.i("cicloVida", "Boton pulsado correcto")
-        // 3.1. Si es correcto, actualizar el mensaje y los aciertos
-            datos.value = datos.value.copy(
-                aciertos = datos.value.aciertos + 1,
-                mensaje = "Los números son iguales"
-            )
-        } else if (datos.value.secuenciaBotones.isNotEmpty() &&
-            index < datos.value.secuenciaBotones.size) {
-            Log.i("cicloVida", "Los números son diferentes")
-        // 3.2. Si es incorrecto, actualizar el mensaje y los fallos
-            datos.value = datos.value.copy(
-                fallos = datos.value.fallos + 1,
-                mensaje = "Los números son diferentes"
-            )
-        }
-
-        // 4. Comprobar si se ha completado la secuencia de 4 botones
-        if (nuevosBotonesPulsados.size == 4) {
-            if (datos.value.secuenciaBotones == nuevosBotonesPulsados) {
-                Log.i("cicloVida", "Pasa de ronda")
-                val nuevaSecuencia = generateSequence()
-                datos.value = datos.value.copy(
-                    rondaActual = datos.value.rondaActual + 1,
-                    secuenciaBotones = nuevaSecuencia, // Nueva secuencia generada
-                    botonesPulsados = listOf(),
-                    mensaje = "¡Ronda completada! Prepárate para la siguiente ronda."
-                )
-            } else {
-                Log.i("cicloVida", "Fin del juego")
-                datos.value = datos.value.copy(
-                    secuenciaBotones = listOf(),
-                    botonesPulsados = listOf(),
-                    mensaje = "Juego terminado: \nHas llegado a la ronda ${datos.value.rondaActual}." +
-                            "\nHas tenido un total de ${datos.value.aciertos} aciertos." +
-                            "\nHas tenido un total de ${datos.value.fallos} fallos"
-                )
-            }
-        }
-
-        Log.i("cicloVida", "Secuencia después del click: ${datos.value.secuenciaBotones}")
-        Log.i("cicloVida", "Botones pulsados después del click: ${datos.value.botonesPulsados}")
+    private fun subirDeRonda() {
+        ronda.value += 1
+        Log.i("cicloVida", "Ronda aumentada")
     }
 
-    fun generateSequence(): List<Int> {
-        val nuevaSecuencia = List(4) { Random.nextInt(1, 5) }
-        Log.i("cicloVida", "Secuencia de números generada: $nuevaSecuencia")
-        datos.value = datos.value.copy(
-            mostrarSioNo = true,
-            secuenciaBotones = nuevaSecuencia,
-        // Reiniciar botonesPulsados
-            botonesPulsados = listOf()
-        )
-        return nuevaSecuencia
+    fun generarSecuencia() {
+        subirDeRonda()
+        secuenciaGenerada.add((0..3).random())
+        generandoNumeros()
+        Log.i("cicloVida", "Secuencia generada: $secuenciaGenerada")
     }
+
+    fun click(buttonId: Int, context: Context) {
+        secuenciaIntroducida.add(buttonId)
+        comprobarSecuencia(context)
+    }
+
+    private fun comprobarSecuencia(context: Context) {
+        if (secuenciaGenerada == secuenciaIntroducida){
+            secuenciaIntroducida.clear()
+            Log.d("cicloVida", "Secuencia Correcta")
+            establecerTexto("Ronda " + ronda.value + " superada")
+            Toast.makeText(context, mensajeMostrado, Toast.LENGTH_SHORT).show()
+            juegoEnEspera()
+        }
+        else if (secuenciaGenerada.subList(0, secuenciaIntroducida.size) == secuenciaIntroducida){
+            Log.d("cicloVida", "Secuencia Correcta")
+        }
+        else{
+            secuenciaIntroducida.clear()
+            secuenciaGenerada.clear()
+            ronda.value = 0
+            Log.d("cicloVida", "Secuencia Inorrecta")
+            establecerTexto("Ronda perdida :(")
+            Toast.makeText(context, mensajeMostrado, Toast.LENGTH_SHORT).show()
+            juegoEnEspera()
+        }
+    }
+
+    private fun establecerTexto(text: String) {
+        mensajeMostrado = text
+        Log.d("cicloVida", "Mensaje mostrado: $mensajeMostrado")
+    }
+
+    private fun generandoNumeros() {
+        estadoActual.value = GENERANDO
+        Log.d("cicloVida", "Estado actual: Generando")
+    }
+
+    fun jugandoJuego() {
+        estadoActual.value = JUGANDO
+        Log.d("cicloVida", "Estado actual: Jugando")
+    }
+
+    private fun juegoEnEspera() {
+        estadoActual.value = ESPERANDO
+        Log.d("cicloVida", "Estado actual: Esperando")
+    }
+    companion object
 }
-
