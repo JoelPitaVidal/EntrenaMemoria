@@ -1,5 +1,4 @@
-package com.example.previaexamenmiercoles.model
-
+package com.example.adivinarpalabra.model
 
 object Datos {
     var palabra = ""

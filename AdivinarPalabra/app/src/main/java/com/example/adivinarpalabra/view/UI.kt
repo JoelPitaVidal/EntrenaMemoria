@@ -1,4 +1,4 @@
-package com.example.previaexamenmiercoles.view
+package com.example.adivinarpalabra.view
 
 
 import android.util.Log
@@ -33,7 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.example.previaexamenmiercoles.R
+import com.example.adivinarpalabra.R
+import com.example.adivinarpalabra.viewmodel.ViewModel
 
 @Composable
 fun MyApp(viewModel: ViewModel) {
@@ -90,7 +91,7 @@ fun ShowRondas(rondas:Int){
         Text(text = "Rondas: $rondas" ,
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White)
+            color = Color.Black)
 
     }
 
@@ -101,13 +102,12 @@ fun ShowSinonimo(sinonimo:String){
     Column(verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(top = 46.dp, start = 90.dp)
-    ) {
+            .padding(top = 30.dp, start = 115.dp)    ) {
 
         Text(text = "Sinonimo: $sinonimo" ,
             fontSize = 23.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White)
+            color = Color.Black)
 
     }
 
@@ -172,7 +172,7 @@ fun ButtonEnter(viewModel: ViewModel, palabraJugador:String, palabraMaquina:Stri
         ){
             Text(
                 text = "Enter",
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 20.sp
             )
         }
@@ -190,7 +190,7 @@ fun ShowAciertos(aciertos:Int){
         Text(text = "Aciertos: $aciertos" ,
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White)
+            color = Color.Black)
 
     }
 
@@ -207,7 +207,7 @@ fun ShowFallos(fallos:Int){
         Text(text = "Fallos: $fallos" ,
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White)
+            color = Color.Black)
 
     }
 
@@ -241,7 +241,7 @@ fun ButtonStart(viewModel: ViewModel){
         ){
             Text(
                 text = "Start",
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 20.sp
             )
         }

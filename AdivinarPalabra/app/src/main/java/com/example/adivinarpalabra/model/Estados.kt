@@ -1,4 +1,4 @@
-package com.example.previaexamenmiercoles.model
+package com.example.adivinarpalabra.model
 
 enum class Estados(val startActivo:Boolean, val enterActivo:Boolean, val textoActivo:Boolean) {
     INICIO(startActivo = true, enterActivo = false, textoActivo = false),
